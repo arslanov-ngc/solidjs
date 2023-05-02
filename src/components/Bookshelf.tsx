@@ -7,16 +7,19 @@ interface BookshelfProps {
 }
 
 export type Book = {
+  key: string;
   title?: string;
   author?: string;
 };
 
 const initialBooks: Book[] = [
   {
+    key: 'initialKey/1',
     title: 'Code Complete',
     author: 'Steve McConnell',
   },
   {
+    key: 'initialKey/2',
     title: 'The Hobbit',
     author: 'J.R.R. Tolkien',
   },

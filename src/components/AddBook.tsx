@@ -1,57 +1,45 @@
-import { JSX, Setter, createSignal } from 'solid-js';
+import { JSX, Setter, createResource, createSignal } from 'solid-js';
 import { Book } from './Bookshelf';
+import { searchBooks } from '../utils/searchBooks';
+import { SearchList } from './SearchList';
 
 interface AddBookProps {
   setBooks: Setter<Book[]>;
   setShow: Setter<boolean>;
 }
 
-const emptyBook: Book = { title: '', author: '' };
-
 export function AddBook(props: AddBookProps) {
-  const [newBook, setNewBook] = createSignal(emptyBook);
+  const [input, setInput] = createSignal('');
+  const [query, setQuery] = createSignal('');
 
-  const addBook: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (e) => {
+  const onSubmit: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (e) => {
     e.preventDefault();
-
-    if (checkInputLength([newBook().title as string, newBook().author as string])) {
-      props.setBooks((prev) => [...prev, newBook()]);
-      setNewBook(emptyBook);
-    } else {
-      alert('Please enter something');
-    }
+    setQuery(input());
   };
 
-  const checkInputLength = (allInput: string[]) => allInput.find((i: string) => i.trim().length !== 0);
+  const [data] = createResource(query, searchBooks);
 
   return (
     <form>
+      <h2>Search</h2>
       <div>
-        <label for="title">Book name</label>
+        <label for="title">Search Book</label>
         <input
           id="title"
-          value={newBook().title}
+          placeholder="Enter something"
+          value={input()}
           onInput={(e) => {
-            setNewBook({ ...newBook(), title: e.currentTarget.value });
+            setInput(e.currentTarget.value);
           }}
         />
       </div>
-      <div>
-        <label for="author">Author</label>
-        <input
-          id="author"
-          value={newBook().author}
-          onInput={(e) => {
-            setNewBook({ ...newBook(), author: e.currentTarget.value });
-          }}
-        />
-      </div>
-      <button type="submit" onClick={addBook}>
-        Add book
+      <button type="submit" onClick={onSubmit}>
+        Search
       </button>
       <button type="button" onClick={() => props.setShow(false)}>
         Close
       </button>
+      <SearchList when={data.loading} data={data() as Book[]} setBooks={props.setBooks} />
     </form>
   );
 }

@@ -91,3 +91,22 @@ button[type='button'] {
 button[type='button']:hover {
   background-color: rgb(243, 147, 147);
 }
+
+button.add_button {
+  background-color: rgb(177, 194, 248);
+}
+
+button.add_button:hover {
+  background-color: rgb(140, 165, 247);
+}
+
+.search_list li {
+  background-color: rgba(221, 221, 221, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search_list button {
+  margin: 0;
+}
